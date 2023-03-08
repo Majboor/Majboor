@@ -4,7 +4,9 @@
 
 - 🔭 I’m currently working on **OSIL**
 
-- 🌱 I’m currently preparing for **COMPTIA NETWORK+ CompTIA Network+ CompTIA A+ Microsoft Certified: Azure AI Engineer Associate CEH**
+- 🌱 I’m currently preparing for ** CompTIA Network+
+  CompTIA A+ Microsoft Certified: 
+  Azure AI Engineer Associate CEH**
 
 - 👯 I’m looking to collaborate on **NFC-COPY**
 
