@@ -1,5 +1,6 @@
 <h1 align="center">Hi 👋, I'm Mr.Majboor</h1>
 <h3 align="center">Highly skilled cybersecurity professional with experience in bug bounty hunting and Python programming</h3>
+<img align="right" alt="coding" width=400 src="https://user-images.githubusercontent.com/55389276/140866485-8fb1c876-9a8f-4d6a-98dc-08c4981eaf70.gif">
 
 - 🔭 I’m currently working on **OSIL**
 
@@ -7,7 +8,7 @@
 
 - 👯 I’m looking to collaborate on **NFC-COPY**
 
-- 🤝 I’m looking for help with **NFC-COPY**
+- 🤝 I’m looking for help with **ACR122U**
 
 - 👨‍💻 All of my projects are available at [https://profile.techrealm.online/](https://profile.techrealm.online/)
 
