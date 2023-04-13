@@ -16,7 +16,7 @@
 
 - 💬 Ask me about **Anything related to Tech**
 
-- 📫 How to reach me **test@techrealm.online**
+- 📫 How to reach me **info@techrealm.online**
 
 - 📄 Know about my experiences [Contact me on Mail](Contact me on Mail)
 
