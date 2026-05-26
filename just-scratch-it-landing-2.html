@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Just Scratch It — Employee Recognition That People Actually Feel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Spline+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  :root{
+    --ink:#0e1a14;
+    --ink-soft:#33453c;
+    --paper:#f4f1e8;
+    --paper-warm:#ece6d6;
+    --cream:#fbf9f2;
+    --moss:#1f6b45;
+    --moss-deep:#134a30;
+    --lime:#c7f04a;
+    --lime-deep:#9bc91f;
+    --gold:#e8b23a;
+    --coral:#e96a4d;
+    --line:#d8d2c0;
+    --shadow:rgba(14,26,20,.16);
+    --r:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Spline Sans',sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    line-height:1.6;
+  }
+  ::selection{background:var(--lime);color:var(--ink);}
+  h1,h2,h3,h4{font-family:'Fraunces',serif;line-height:1.04;letter-spacing:-.02em;font-weight:600;}
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+
+  /* grain overlay */
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
+    opacity:.035;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .wrap{max-width:1240px;margin:0 auto;padding:0 32px;}
+  .eyebrow{
+    font-family:'Spline Sans',sans-serif;font-weight:600;font-size:.74rem;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--moss);
+    display:inline-flex;align-items:center;gap:9px;
+  }
+  .eyebrow::before{content:"";width:24px;height:2px;background:var(--lime-deep);display:inline-block;}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky;top:0;z-index:500;
+    background:rgba(244,241,232,.82);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:74px;}
+  .logo{font-family:'Fraunces',serif;font-weight:900;font-size:1.42rem;letter-spacing:-.03em;display:flex;align-items:center;gap:2px;}
+  .logo .scr{
+    background:var(--ink);color:var(--lime);padding:2px 9px;border-radius:7px;
+    transform:rotate(-3deg);display:inline-block;
+  }
+  .logo .it{font-style:italic;color:var(--moss);}
+  .nav-links{display:flex;gap:34px;align-items:center;}
+  .nav-links a{font-size:.92rem;font-weight:500;color:var(--ink-soft);transition:color .2s;}
+  .nav-links a:hover{color:var(--moss);}
+  .btn{
+    font-family:'Spline Sans',sans-serif;font-weight:600;cursor:pointer;border:none;
+    border-radius:100px;font-size:.93rem;transition:transform .18s,box-shadow .18s,background .2s;
+    display:inline-flex;align-items:center;gap:9px;
+  }
+  .btn-primary{
+    background:var(--ink);color:var(--lime);padding:13px 26px;
+    box-shadow:0 8px 22px -8px var(--shadow);
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 30px -10px rgba(14,26,20,.4);}
+  .btn-lime{background:var(--lime);color:var(--ink);padding:15px 32px;font-size:1rem;
+    box-shadow:0 10px 28px -10px rgba(155,201,31,.7);}
+  .btn-lime:hover{transform:translateY(-2px);box-shadow:0 16px 36px -10px rgba(155,201,31,.85);}
+  .btn-ghost{background:transparent;color:var(--ink);padding:14px 28px;border:1.6px solid var(--ink);}
+  .btn-ghost:hover{background:var(--ink);color:var(--cream);}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;padding:62px 0 90px;overflow:hidden;}
+  .hero-bg{
+    position:absolute;inset:0;z-index:0;
+    background:
+      radial-gradient(900px 540px at 78% 18%, rgba(199,240,74,.34), transparent 65%),
+      radial-gradient(700px 600px at 12% 92%, rgba(31,107,69,.16), transparent 60%);
+  }
+  .hero-bg::before{
+    content:"";position:absolute;inset:0;
+    background-image:linear-gradient(var(--line) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:62px 62px;opacity:.4;
+    -webkit-mask-image:radial-gradient(circle at 50% 40%,#000,transparent 75%);
+            mask-image:radial-gradient(circle at 50% 40%,#000,transparent 75%);
+  }
+  .hero-grid{
+    position:relative;z-index:2;display:grid;grid-template-columns:1.04fr 1fr;
+    gap:54px;align-items:center;
+  }
+  .hero-copy h1{
+    font-size:clamp(2.7rem,5.1vw,4.35rem);font-weight:600;margin:20px 0 0;
+  }
+  .hero-copy h1 em{
+    font-style:italic;color:var(--moss);position:relative;font-weight:500;
+  }
+  .hero-copy h1 .mark{
+    background:var(--lime);padding:0 .14em;border-radius:6px;
+    box-decoration-break:clone;-webkit-box-decoration-break:clone;
+  }
+  .hero-sub{
+    font-size:1.12rem;color:var(--ink-soft);margin:24px 0 32px;max-width:30em;
+  }
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
+  .hero-trust{
+    display:flex;gap:24px;margin-top:34px;flex-wrap:wrap;
+  }
+  .trust-item{display:flex;flex-direction:column;}
+  .trust-item b{font-family:'Fraunces',serif;font-size:1.7rem;font-weight:700;color:var(--moss);}
+  .trust-item span{font-size:.82rem;color:var(--ink-soft);}
+
+  /* scratch stage */
+  .scratch-stage{
+    position:relative;
+  }
+  .stage-card{
+    position:relative;background:var(--cream);border-radius:26px;
+    padding:26px 26px 22px;border:1px solid var(--line);
+    box-shadow:0 40px 80px -34px rgba(14,26,20,.4),0 2px 0 rgba(255,255,255,.7) inset;
+  }
+  .stage-tag{
+    position:absolute;top:-15px;left:26px;background:var(--coral);color:#fff;
+    font-size:.7rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+    padding:7px 14px;border-radius:100px;box-shadow:0 8px 18px -6px rgba(233,106,77,.6);
+  }
+  .canvas-host{
+    position:relative;width:100%;aspect-ratio:1.58/1;border-radius:16px;
+    overflow:hidden;background:linear-gradient(150deg,#10311f,#1f6b45 60%,#2d8a59);
+    cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44'%3E%3Cdefs%3E%3CradialGradient id='g' cx='38%25' cy='34%25'%3E%3Cstop offset='0' stop-color='%23ffe9a8'/%3E%3Cstop offset='0.55' stop-color='%23e8b23a'/%3E%3Cstop offset='1' stop-color='%23a9781a'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='22' cy='22' r='15' fill='url(%23g)' stroke='%23fff' stroke-opacity='0.55' stroke-width='2'/%3E%3Ctext x='22' y='29' font-family='Georgia,serif' font-size='17' font-weight='900' fill='%237a5410' text-anchor='middle'%3E%24%3C/text%3E%3C/svg%3E") 22 22, grab;
+  }
+  .canvas-host:active{
+    cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cdefs%3E%3CradialGradient id='g' cx='38%25' cy='34%25'%3E%3Cstop offset='0' stop-color='%23ffe9a8'/%3E%3Cstop offset='0.55' stop-color='%23e8b23a'/%3E%3Cstop offset='1' stop-color='%23a9781a'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='20' cy='20' r='13' fill='url(%23g)' stroke='%23fff' stroke-opacity='0.6' stroke-width='2'/%3E%3Ctext x='20' y='27' font-family='Georgia,serif' font-size='15' font-weight='900' fill='%237a5410' text-anchor='middle'%3E%24%3C/text%3E%3C/svg%3E") 20 20, grabbing;
+  }
+  #scratch3d{position:absolute;inset:0;width:100%;height:100%;z-index:1;}
+  /* the reveal layer behind the foil */
+  .reveal{
+    position:absolute;inset:0;z-index:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;padding:8% 11%;
+    background:radial-gradient(circle at 50% 32%,#1c5b3b,#0c2a1b);
+  }
+  .reveal .r-icon{font-size:2.2rem;margin-bottom:6px;}
+  .reveal .r-kicker{
+    font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--lime);font-weight:700;margin-bottom:8px;
+  }
+  .reveal .r-headline{
+    font-family:'Fraunces',serif;font-size:clamp(1.1rem,2.3vw,1.6rem);
+    font-weight:600;color:#fff;line-height:1.16;
+  }
+  .reveal .r-headline em{color:var(--lime);font-style:italic;}
+  .reveal .r-sub{font-size:.86rem;color:rgba(255,255,255,.75);margin-top:9px;max-width:24em;}
+  .scratch-hint{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    z-index:3;pointer-events:none;text-align:center;transition:opacity .4s;
+  }
+  .scratch-hint .coin{
+    width:54px;height:54px;border-radius:50%;margin:0 auto 10px;
+    background:radial-gradient(circle at 36% 32%,#ffe9a8,#e8b23a 55%,#a9781a);
+    box-shadow:0 6px 16px -4px rgba(0,0,0,.5),0 0 0 4px rgba(255,255,255,.18) inset;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;font-weight:900;color:#7a5410;font-size:1.1rem;
+    animation:bob 1.8s ease-in-out infinite;
+  }
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-8deg);}50%{transform:translateY(-9px) rotate(8deg);}}
+  .scratch-hint p{
+    color:#fff;font-weight:600;font-size:.94rem;
+    background:rgba(14,26,20,.5);padding:6px 14px;border-radius:100px;
+    backdrop-filter:blur(4px);
+  }
+  .stage-foot{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-top:16px;gap:12px;
+  }
+  .progress-wrap{flex:1;}
+  .progress-label{font-size:.74rem;color:var(--ink-soft);font-weight:600;margin-bottom:5px;display:flex;justify-content:space-between;}
+  .progress-bar{height:7px;background:var(--paper-warm);border-radius:100px;overflow:hidden;}
+  .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--lime-deep),var(--lime));transition:width .25s;border-radius:100px;}
+  .reset-btn{
+    background:transparent;border:1.4px solid var(--line);border-radius:100px;
+    padding:8px 16px;font-size:.8rem;font-weight:600;cursor:pointer;color:var(--ink-soft);
+    transition:all .2s;display:flex;align-items:center;gap:6px;
+  }
+  .reset-btn:hover{border-color:var(--moss);color:var(--moss);}
+
+  /* persona switcher */
+  .persona-row{
+    display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;justify-content:center;
+  }
+  .persona-chip{
+    background:var(--cream);border:1.4px solid var(--line);border-radius:100px;
+    padding:9px 15px;font-size:.82rem;font-weight:600;cursor:pointer;
+    transition:all .18s;display:flex;align-items:center;gap:7px;color:var(--ink-soft);
+  }
+  .persona-chip .dot{width:8px;height:8px;border-radius:50%;background:var(--line);transition:background .2s;}
+  .persona-chip:hover{border-color:var(--moss);transform:translateY(-1px);}
+  .persona-chip.active{background:var(--ink);color:var(--cream);border-color:var(--ink);}
+  .persona-chip.active .dot{background:var(--lime);}
+  .persona-cap{text-align:center;font-size:.82rem;color:var(--ink-soft);margin-top:10px;font-style:italic;}
+
+  /* ---------- MARQUEE ---------- */
+  .marquee{
+    background:var(--ink);color:var(--paper);padding:18px 0;overflow:hidden;
+    border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .marquee-track{display:flex;gap:54px;white-space:nowrap;animation:slide 32s linear infinite;width:max-content;}
+  .marquee span{font-family:'Fraunces',serif;font-size:1.08rem;font-style:italic;display:flex;align-items:center;gap:54px;color:rgba(244,241,232,.62);}
+  .marquee span::after{content:"✦";color:var(--lime);font-style:normal;}
+  @keyframes slide{to{transform:translateX(-50%);}}
+
+  /* ---------- SECTION SHELL ---------- */
+  section{position:relative;}
+  .sec-pad{padding:108px 0;}
+  .sec-head{max-width:38em;}
+  .sec-head h2{font-size:clamp(2.1rem,3.8vw,3.1rem);font-weight:600;margin:14px 0 16px;}
+  .sec-head h2 em{font-style:italic;color:var(--moss);font-weight:500;}
+  .sec-head p{color:var(--ink-soft);font-size:1.06rem;}
+
+  /* ---------- TRIGGER DIAGNOSTIC ---------- */
+  .diag{background:var(--ink);color:var(--paper);}
+  .diag .eyebrow{color:var(--lime);}
+  .diag .eyebrow::before{background:var(--lime);}
+  .diag .sec-head h2{color:var(--paper);}
+  .diag .sec-head h2 em{color:var(--lime);}
+  .diag .sec-head p{color:rgba(244,241,232,.66);}
+  .diag-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;margin-top:48px;align-items:start;}
+  .signal-list{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .signal{
+    background:rgba(255,255,255,.04);border:1.4px solid rgba(255,255,255,.1);
+    border-radius:14px;padding:16px 16px;cursor:pointer;transition:all .18s;
+    display:flex;gap:12px;align-items:flex-start;
+  }
+  .signal:hover{border-color:rgba(199,240,74,.55);background:rgba(199,240,74,.06);}
+  .signal.on{border-color:var(--lime);background:rgba(199,240,74,.12);}
+  .sig-check{
+    width:22px;height:22px;border-radius:7px;border:1.6px solid rgba(255,255,255,.28);
+    flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    transition:all .18s;font-size:.8rem;
+  }
+  .signal.on .sig-check{background:var(--lime);border-color:var(--lime);color:var(--ink);}
+  .sig-text b{display:block;font-size:.93rem;color:var(--paper);font-weight:600;}
+  .sig-text span{font-size:.79rem;color:rgba(244,241,232,.55);}
+  .diag-result{
+    background:linear-gradient(165deg,rgba(199,240,74,.1),rgba(255,255,255,.03));
+    border:1.4px solid rgba(199,240,74,.25);border-radius:var(--r);padding:30px;
+    position:sticky;top:96px;
+  }
+  .diag-result .res-score{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;}
+  .diag-result .res-score b{font-family:'Fraunces',serif;font-size:3.4rem;font-weight:700;color:var(--lime);}
+  .diag-result .res-score span{font-size:.9rem;color:rgba(244,241,232,.6);}
+  .res-meter{height:9px;background:rgba(255,255,255,.08);border-radius:100px;overflow:hidden;margin:14px 0 20px;}
+  .res-meter-fill{height:100%;width:8%;border-radius:100px;background:linear-gradient(90deg,var(--gold),var(--coral));transition:width .5s cubic-bezier(.2,.7,.3,1);}
+  .res-body h4{font-size:1.15rem;color:var(--paper);margin-bottom:8px;}
+  .res-body p{font-size:.92rem;color:rgba(244,241,232,.72);margin-bottom:18px;}
+  .res-play{
+    background:rgba(0,0,0,.25);border-radius:12px;padding:14px 16px;margin-bottom:18px;
+    border-left:3px solid var(--lime);
+  }
+  .res-play .pl-k{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--lime);font-weight:700;}
+  .res-play .pl-t{font-size:.9rem;color:var(--paper);margin-top:3px;}
+  .diag-result .btn-lime{width:100%;justify-content:center;}
+
+  /* ---------- HOW IT WORKS ---------- */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:54px;}
+  .step{
+    background:var(--cream);border:1px solid var(--line);border-radius:var(--r);
+    padding:28px 24px;position:relative;transition:transform .2s,box-shadow .2s;
+  }
+  .step:hover{transform:translateY(-5px);box-shadow:0 24px 44px -22px var(--shadow);}
+  .step-num{
+    font-family:'Fraunces',serif;font-size:2.6rem;font-weight:900;color:var(--paper-warm);
+    line-height:1;margin-bottom:10px;
+  }
+  .step:nth-child(2) .step-num{color:#dbe9c0;}
+  .step h4{font-size:1.18rem;margin-bottom:8px;}
+  .step p{font-size:.9rem;color:var(--ink-soft);}
+  .step .pin{
+    position:absolute;top:24px;right:24px;width:30px;height:30px;border-radius:9px;
+    background:var(--ink);color:var(--lime);display:flex;align-items:center;justify-content:center;
+    font-size:.95rem;
+  }
+
+  /* ---------- OUTCOMES / ICP CARDS ---------- */
+  .grid-soft{background:var(--cream);}
+  .icp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:52px;}
+  .icp{
+    border-radius:var(--r);padding:30px 26px;position:relative;overflow:hidden;
+    border:1px solid var(--line);background:var(--paper);transition:transform .2s;
+  }
+  .icp:hover{transform:translateY(-5px);}
+  .icp::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:5px;
+    background:var(--moss);
+  }
+  .icp:nth-child(2)::before{background:var(--gold);}
+  .icp:nth-child(3)::before{background:var(--coral);}
+  .icp:nth-child(4)::before{background:var(--lime-deep);}
+  .icp:nth-child(5)::before{background:var(--moss-deep);}
+  .icp:nth-child(6)::before{background:var(--ink);}
+  .icp-ic{font-size:1.7rem;margin-bottom:14px;}
+  .icp h4{font-size:1.2rem;margin-bottom:6px;}
+  .icp .icp-pain{font-size:.82rem;color:var(--coral);font-weight:600;margin-bottom:10px;}
+  .icp p{font-size:.9rem;color:var(--ink-soft);}
+
+  /* ---------- STATS BAND ---------- */
+  .band{background:var(--moss-deep);color:var(--cream);}
+  .band-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;text-align:center;}
+  .band-stat b{font-family:'Fraunces',serif;font-size:3rem;font-weight:700;color:var(--lime);display:block;line-height:1;}
+  .band-stat span{font-size:.86rem;color:rgba(251,249,242,.7);margin-top:8px;display:block;}
+
+  /* ---------- TESTIMONIAL ---------- */
+  .quote-wrap{max-width:54em;margin:0 auto;text-align:center;}
+  .quote-wrap .qmark{font-family:'Fraunces',serif;font-size:5rem;color:var(--lime-deep);line-height:.3;}
+  .quote-wrap blockquote{
+    font-family:'Fraunces',serif;font-size:clamp(1.4rem,2.8vw,2.05rem);
+    font-weight:500;font-style:italic;line-height:1.32;margin:18px 0 26px;
+  }
+  .quote-wrap blockquote em{color:var(--moss);font-style:italic;}
+  .q-author{display:flex;align-items:center;justify-content:center;gap:13px;}
+  .q-avatar{
+    width:48px;height:48px;border-radius:50%;
+    background:linear-gradient(140deg,var(--moss),var(--lime-deep));
+    display:flex;align-items:center;justify-content:center;color:#fff;
+    font-family:'Fraunces',serif;font-weight:700;
+  }
+  .q-author .qn b{display:block;font-family:'Spline Sans';font-size:.95rem;}
+  .q-author .qn span{font-size:.82rem;color:var(--ink-soft);}
+
+  /* ---------- PRICING / SAMPLE CTA ---------- */
+  .cta-final{
+    background:
+      radial-gradient(700px 420px at 85% 15%,rgba(199,240,74,.16),transparent 60%),
+      var(--ink);
+    color:var(--paper);position:relative;overflow:hidden;
+  }
+  .cta-final::before{
+    content:"";position:absolute;inset:0;
+    background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+    background-size:54px 54px;
+    -webkit-mask-image:radial-gradient(circle at 80% 20%,#000,transparent 70%);
+            mask-image:radial-gradient(circle at 80% 20%,#000,transparent 70%);
+  }
+  .cta-in{position:relative;z-index:2;display:grid;grid-template-columns:1.2fr 1fr;gap:54px;align-items:center;}
+  .cta-in h2{font-size:clamp(2.3rem,4.2vw,3.4rem);font-weight:600;color:var(--paper);}
+  .cta-in h2 em{font-style:italic;color:var(--lime);}
+  .cta-in p{color:rgba(244,241,232,.7);font-size:1.06rem;margin:18px 0 28px;max-width:26em;}
+  .sample-card{
+    background:var(--cream);color:var(--ink);border-radius:22px;padding:32px;
+    box-shadow:0 40px 80px -30px rgba(0,0,0,.6);
+  }
+  .sample-card .sc-tag{
+    background:var(--lime);color:var(--ink);font-size:.7rem;font-weight:700;
+    letter-spacing:.13em;text-transform:uppercase;padding:6px 12px;border-radius:100px;
+    display:inline-block;margin-bottom:14px;
+  }
+  .sample-card h3{font-size:1.55rem;margin-bottom:6px;}
+  .sample-card .sc-sub{font-size:.9rem;color:var(--ink-soft);margin-bottom:20px;}
+  .sc-field{margin-bottom:12px;}
+  .sc-field label{font-size:.78rem;font-weight:600;color:var(--ink-soft);display:block;margin-bottom:5px;}
+  .sc-field input,.sc-field select{
+    width:100%;padding:12px 14px;border:1.4px solid var(--line);border-radius:11px;
+    font-family:'Spline Sans';font-size:.92rem;background:var(--paper);color:var(--ink);
+  }
+  .sc-field input:focus,.sc-field select:focus{outline:none;border-color:var(--moss);}
+  .sc-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .sample-card .btn-lime{width:100%;justify-content:center;margin-top:8px;}
+  .sc-note{font-size:.76rem;color:var(--ink-soft);text-align:center;margin-top:10px;}
+  .sc-success{
+    text-align:center;padding:20px 0;display:none;
+  }
+  .sc-success.show{display:block;}
+  .sc-success .ok{
+    width:60px;height:60px;border-radius:50%;background:var(--lime);margin:0 auto 14px;
+    display:flex;align-items:center;justify-content:center;font-size:1.8rem;
+  }
+  .sc-success h3{margin-bottom:6px;}
+  .sc-success p{font-size:.9rem;color:var(--ink-soft);}
+
+  /* ---------- FOOTER ---------- */
+  footer{background:var(--ink);color:rgba(244,241,232,.55);padding:48px 0 36px;border-top:1px solid rgba(255,255,255,.07);}
+  .foot-in{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;}
+  .foot-in .logo{color:var(--paper);}
+  .foot-links{display:flex;gap:26px;font-size:.88rem;}
+  .foot-links a:hover{color:var(--lime);}
+  .foot-copy{font-size:.8rem;margin-top:24px;text-align:center;}
+
+  /* reveal-on-scroll */
+  .ro{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.3,1),transform .7s cubic-bezier(.2,.7,.3,1);}
+  .ro.in{opacity:1;transform:none;}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media(max-width:980px){
+    .hero-grid,.diag-grid,.cta-in{grid-template-columns:1fr;}
+    .steps{grid-template-columns:1fr 1fr;}
+    .icp-grid{grid-template-columns:1fr 1fr;}
+    .band-grid{grid-template-columns:1fr 1fr;gap:30px 20px;}
+    .nav-links{display:none;}
+    .diag-result{position:static;}
+    .scratch-stage{order:-1;}
+  }
+  @media(max-width:560px){
+    .wrap{padding:0 20px;}
+    .sec-pad{padding:72px 0;}
+    .steps,.icp-grid,.signal-list,.sc-row{grid-template-columns:1fr;}
+    .hero{padding:40px 0 64px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= NAV ================= -->
+<nav>
+  <div class="wrap nav-in">
+    <div class="logo">just<span class="scr">Scratch</span><span class="it">&nbsp;it!</span></div>
+    <div class="nav-links">
+      <a href="#diagnostic">Why It Works</a>
+      <a href="#how">How It Works</a>
+      <a href="#outcomes">For Your Team</a>
+      <a href="#proof">Results</a>
+    </div>
+    <button class="btn btn-primary" onclick="scrollToSamples()">Request Free Samples →</button>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="hero-bg"></div>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">Employee Recognition · Reimagined</span>
+      <h1>Recognition your people <em>actually</em> <span class="mark">feel</span> in their hands.</h1>
+      <p class="hero-sub">Generic gift cards get forgotten. A custom scratch-off card is a moment — anticipation, reveal, and a story worth telling. Built for HR teams who need recognition that lands.</p>
+      <div class="hero-cta">
+        <button class="btn btn-lime" onclick="scrollToSamples()">Request Free Samples</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('diagnostic').scrollIntoView({behavior:'smooth'})">See if it fits your team</button>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-item"><b>3.4M+</b><span>Cards delivered</span></div>
+        <div class="trust-item"><b>97%</b><span>Of staff scratch within a day</span></div>
+        <div class="trust-item"><b>$69</b><span>Custom mock-up, no commitment</span></div>
+      </div>
+    </div>
+
+    <!-- ===== SCRATCH STAGE ===== -->
+    <div class="scratch-stage">
+      <div class="stage-card">
+        <span class="stage-tag">Live · Try it yourself</span>
+        <div class="canvas-host" id="canvasHost">
+          <!-- reveal layer -->
+          <div class="reveal" id="revealLayer">
+            <div class="r-icon" id="rIcon">🏆</div>
+            <div class="r-kicker" id="rKicker">For HR &amp; People Ops</div>
+            <div class="r-headline" id="rHeadline">Turn a quiet thank-you into a <em>moment they remember</em>.</div>
+            <div class="r-sub" id="rSub">Recognition that travels desk to desk — and onto Glassdoor.</div>
+          </div>
+          <!-- three.js foil -->
+          <canvas id="scratch3d"></canvas>
+          <!-- hint -->
+          <div class="scratch-hint" id="scratchHint">
+            <div class="coin">$</div>
+            <p>Scratch me to reveal</p>
+          </div>
+        </div>
+        <div class="stage-foot">
+          <div class="progress-wrap">
+            <div class="progress-label"><span id="progLabel">Scratched</span><span id="progPct">0%</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+          </div>
+          <button class="reset-btn" id="resetBtn">↺ Reset</button>
+        </div>
+      </div>
+      <!-- persona switcher -->
+      <div class="persona-row" id="personaRow"></div>
+      <p class="persona-cap">Pick the team you recognize — the card adapts to them.</p>
+    </div>
+  </div>
+</header>
+
+<!-- ================= MARQUEE ================= -->
+<div class="marquee">
+  <div class="marquee-track">
+    <span>Warehouse &amp; Logistics<span></span>Healthcare &amp; Senior Care<span></span>Call Centers &amp; BPO<span></span>Construction &amp; Field Services<span></span>Hospitality<span></span>Mid-market HR Teams<span></span></span>
+    <span>Warehouse &amp; Logistics<span></span>Healthcare &amp; Senior Care<span></span>Call Centers &amp; BPO<span></span>Construction &amp; Field Services<span></span>Hospitality<span></span>Mid-market HR Teams<span></span></span>
+  </div>
+</div>
+
+<!-- ================= TRIGGER DIAGNOSTIC ================= -->
+<section class="diag sec-pad" id="diagnostic">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">The 60-second fit check</span>
+      <h2>What's happening at <em>your company</em> right now?</h2>
+      <p>Recognition isn't generic — timing and context matter. Tick the signals that sound familiar and we'll show you the play that fits.</p>
+    </div>
+    <div class="diag-grid">
+      <div class="signal-list" id="signalList"></div>
+      <div class="diag-result" id="diagResult">
+        <div class="res-score"><b id="resScore">0</b><span>of 8 signals — recognition urgency</span></div>
+        <div class="res-meter"><div class="res-meter-fill" id="resMeter"></div></div>
+        <div class="res-body">
+          <h4 id="resTitle">Select your signals to begin</h4>
+          <p id="resDesc">Most teams we work with check 3 or more. Each signal you tick sharpens the recommendation below.</p>
+          <div class="res-play">
+            <div class="pl-k">Recommended play</div>
+            <div class="pl-t" id="resPlay">Start with a single milestone card pilot — low cost, fast read on engagement.</div>
+          </div>
+          <button class="btn btn-lime" onclick="scrollToSamples()">Get samples for this play →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<section class="sec-pad" id="how">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Turn-key, start to finish</span>
+      <h2>From brief to <em>handed-out</em> in days, not months.</h2>
+      <p>You stay focused on people. We handle design, print, prize logic, and delivery.</p>
+    </div>
+    <div class="steps">
+      <div class="step ro"><div class="pin">✎</div><div class="step-num">01</div><h4>Free consultation</h4><p>We learn your team, your moment, and your budget — then map a recognition plan that fits.</p></div>
+      <div class="step ro"><div class="pin">◑</div><div class="step-num">02</div><h4>Custom design</h4><p>Your brand, your message, multiple prize tiers. A $69 mock-up before you commit to anything.</p></div>
+      <div class="step ro"><div class="pin">▦</div><div class="step-num">03</div><h4>Print &amp; prize logic</h4><p>Premium cards with verified odds — print or digital. Quick-turn delivery when you need it.</p></div>
+      <div class="step ro"><div class="pin">♺</div><div class="step-num">04</div><h4>Hand out &amp; measure</h4><p>Track scratch rates, replies, and morale lift. Refine, repeat, build a recognition habit.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= OUTCOMES / ICP ================= -->
+<section class="grid-soft sec-pad" id="outcomes">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Built for the teams hardest to reach</span>
+      <h2>One card. <em>Six</em> very different recognition problems, solved.</h2>
+      <p>Frontline, dispersed, high-turnover teams rarely see traditional recognition. A scratch card finds them.</p>
+    </div>
+    <div class="icp-grid">
+      <div class="icp ro"><div class="icp-ic">📦</div><h4>Warehouse &amp; Logistics</h4><div class="icp-pain">Trigger: high-turnover, new site opening</div><p>Reward safety streaks and shift pickups on the floor — no app, no email, no one left out.</p></div>
+      <div class="icp ro"><div class="icp-ic">🏥</div><h4>Healthcare &amp; Senior Care</h4><div class="icp-pain">Trigger: burnout, night-shift invisibility</div><p>Recognition that reaches every shift — so night nurses feel as seen as the day team.</p></div>
+      <div class="icp ro"><div class="icp-ic">🎧</div><h4>Call Centers &amp; BPO</h4><div class="icp-pain">Trigger: negative Glassdoor trend</div><p>Daily wins made tangible — turn churn-prone seats into a culture worth reviewing well.</p></div>
+      <div class="icp ro"><div class="icp-ic">🦺</div><h4>Construction &amp; Field Services</h4><div class="icp-pain">Trigger: safety-sensitive workforce</div><p>Hand-delivered safety rewards on-site — recognition that travels to the job, not the desk.</p></div>
+      <div class="icp ro"><div class="icp-ic">🛎️</div><h4>Hospitality &amp; Multi-site</h4><div class="icp-pain">Trigger: seasonal hiring, expansion</div><p>One consistent recognition ritual across every location — peak-season morale, locked in.</p></div>
+      <div class="icp ro"><div class="icp-ic">👥</div><h4>Mid-market HR Teams</h4><div class="icp-pain">Trigger: post-layoff recovery</div><p>Rebuild trust with the people who stayed — a deliberate, visible signal that they matter.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STATS BAND ================= -->
+<section class="band sec-pad">
+  <div class="wrap band-grid">
+    <div class="band-stat ro"><b data-count="3.4" data-suffix="M">0</b><span>Recognition cards delivered</span></div>
+    <div class="band-stat ro"><b data-count="97" data-suffix="%">0</b><span>Scratched within 24 hours</span></div>
+    <div class="band-stat ro"><b data-count="31" data-suffix="%">0</b><span>Avg. lift in recognition frequency</span></div>
+    <div class="band-stat ro"><b data-count="4" data-suffix=" days">0</b><span>Typical quick-turn delivery</span></div>
+  </div>
+</section>
+
+<!-- ================= TESTIMONIAL ================= -->
+<section class="sec-pad" id="proof">
+  <div class="wrap quote-wrap ro">
+    <div class="qmark">"</div>
+    <blockquote>We'd tried digital points and nobody cared. The scratch cards <em>actually got opened</em> — on the floor, in the break room. For the first time our warehouse team felt like the office noticed them.</blockquote>
+    <div class="q-author">
+      <div class="q-avatar">DM</div>
+      <div class="qn"><b>Dana Mercer</b><span>People Ops Lead · Regional Logistics Group</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FINAL CTA / SAMPLES ================= -->
+<section class="cta-final sec-pad" id="samples">
+  <div class="wrap cta-in">
+    <div>
+      <span class="eyebrow" style="color:var(--lime)">No cost · No commitment</span>
+      <h2>Hold the product before you <em>buy the idea</em>.</h2>
+      <p>We'll ship a pack of real scratch cards to your desk so you and your team can feel exactly what your people would. Most HR leaders decide the moment they scratch one.</p>
+      <div class="hero-trust">
+        <div class="trust-item"><b style="color:var(--lime)">Free</b><span style="color:rgba(244,241,232,.6)">Physical sample pack</span></div>
+        <div class="trust-item"><b style="color:var(--lime)">2–4 days</b><span style="color:rgba(244,241,232,.6)">To your office</span></div>
+      </div>
+    </div>
+    <div class="sample-card">
+      <div id="sampleForm">
+        <span class="sc-tag">Request Free Samples</span>
+        <h3>Get your sample pack</h3>
+        <p class="sc-sub">Real cards, shipped free. We'll include a play tailored to your team.</p>
+        <div class="sc-field"><label>Work email</label><input type="email" id="fEmail" placeholder="you@company.com" /></div>
+        <div class="sc-row">
+          <div class="sc-field"><label>First name</label><input type="text" id="fName" placeholder="Alex" /></div>
+          <div class="sc-field"><label>Company</label><input type="text" id="fCo" placeholder="Acme Inc." /></div>
+        </div>
+        <div class="sc-field">
+          <label>Which team are you recognizing?</label>
+          <select id="fTeam">
+            <option>Warehouse &amp; Logistics</option>
+            <option>Healthcare &amp; Senior Care</option>
+            <option>Call Center &amp; BPO</option>
+            <option>Construction &amp; Field Services</option>
+            <option>Hospitality &amp; Multi-site</option>
+            <option>Mid-market / Other</option>
+          </select>
+        </div>
+        <button class="btn btn-lime" onclick="submitSamples()">Ship my free samples →</button>
+        <p class="sc-note">No sales pressure. We send the pack, you decide.</p>
+      </div>
+      <div class="sc-success" id="sampleSuccess">
+        <div class="ok">✓</div>
+        <h3>Your samples are on the way</h3>
+        <p>Check your inbox for tracking. We've matched a recognition play to your team — it's in the box.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="foot-in">
+      <div class="logo">just<span class="scr">Scratch</span><span class="it">&nbsp;it!</span></div>
+      <div class="foot-links">
+        <a href="#how">How It Works</a>
+        <a href="#outcomes">For Your Team</a>
+        <a href="#diagnostic">Fit Check</a>
+        <a href="#samples">Free Samples</a>
+      </div>
+      <div style="font-size:.9rem;color:var(--lime);font-weight:600;">1.833.WIN TONS</div>
+    </div>
+    <div class="foot-copy">© 2026 Just Scratch It — Recognition that people actually feel.</div>
+  </div>
+</footer>
+
+<script>
+/* ========================================================
+   PERSONA + REVEAL DATA
+   ======================================================== */
+const PERSONAS = [
+  { id:'hr', label:'HR & People Ops', color:'#1f6b45', icon:'🏆',
+    kicker:'For HR & People Ops',
+    headline:'Turn a quiet thank-you into a <em>moment they remember</em>.',
+    sub:'Recognition that travels desk to desk — and onto Glassdoor.',
+    foil:[0x2d8a59,0x1f6b45] },
+  { id:'warehouse', label:'Warehouse', color:'#e8b23a', icon:'📦',
+    kicker:'For Warehouse & Logistics',
+    headline:'Reward the safety streak <em>on the floor</em>, not in an inbox.',
+    sub:'No app. No email. Every shift, every worker — included.',
+    foil:[0xe8b23a,0xb4861f] },
+  { id:'healthcare', label:'Healthcare', color:'#e96a4d', icon:'🏥',
+    kicker:'For Healthcare & Senior Care',
+    headline:'Make the <em>night shift feel as seen</em> as the day team.',
+    sub:'Recognition that reaches every ward, every rotation.',
+    foil:[0xe96a4d,0xb84a31] },
+  { id:'callcenter', label:'Call Center', color:'#4a7fd6', icon:'🎧',
+    kicker:'For Call Centers & BPO',
+    headline:'Turn a churn-prone seat into a <em>culture worth reviewing</em>.',
+    sub:'Daily wins, made tangible — Glassdoor improves itself.',
+    foil:[0x4a7fd6,0x2f5aa3] },
+  { id:'construction', label:'Construction', color:'#9bc91f', icon:'🦺',
+    kicker:'For Construction & Field Services',
+    headline:'Hand-deliver recognition <em>to the job site</em>.',
+    sub:'Safety rewards that travel to the crew, not the desk.',
+    foil:[0x9bc91f,0x6f9415] },
+  { id:'layoff', label:'Post-Layoff', color:'#7a5fb0', icon:'🤝',
+    kicker:'For Post-Layoff Recovery',
+    headline:'Rebuild trust with <em>the people who stayed</em>.',
+    sub:'A deliberate, visible signal that they still matter.',
+    foil:[0x7a5fb0,0x553e85] },
+];
+let activePersona = PERSONAS[0];
+
+/* ========================================================
+   THREE.JS — 3D SCRATCH FOIL CARD
+   ======================================================== */
+const host = document.getElementById('canvasHost');
+const canvas = document.getElementById('scratch3d');
+const hint = document.getElementById('scratchHint');
+
+let renderer, scene, camera, cardMesh, foilTex, foilCtx, foilCanvas;
+let targetRotX = 0, targetRotY = 0, curRotX = 0, curRotY = 0;
+let scratched = 0, totalPixels = 1, isDown = false, revealed = false;
+let lastX = null, lastY = null;
+
+function initThree(){
+  scene = new THREE.Scene();
+  const w = host.clientWidth, h = host.clientHeight;
+  camera = new THREE.PerspectiveCamera(34, w/h, 0.1, 100);
+  camera.position.set(0,0,6.6);
+
+  renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setSize(w,h);
+
+  // lighting
+  scene.add(new THREE.AmbientLight(0xffffff,0.62));
+  const key = new THREE.DirectionalLight(0xffffff,0.95);
+  key.position.set(3,4,5); scene.add(key);
+  const rim = new THREE.DirectionalLight(0xc7f04a,0.5);
+  rim.position.set(-4,-2,3); scene.add(rim);
+
+  buildFoilTexture();
+
+  // card geometry — a flat panel
+  const geo = new THREE.PlaneGeometry(4.55,2.9,1,1);
+  const mat = new THREE.MeshStandardMaterial({
+    map: foilTex, transparent:true, roughness:0.32, metalness:0.62,
+  });
+  cardMesh = new THREE.Mesh(geo, mat);
+  scene.add(cardMesh);
+
+  animate();
+}
+
+/* draw the metallic foil onto a 2D canvas used as a texture */
+function buildFoilTexture(){
+  foilCanvas = document.createElement('canvas');
+  foilCanvas.width = 910; foilCanvas.height = 580;
+  foilCtx = foilCanvas.getContext('2d');
+  totalPixels = foilCanvas.width * foilCanvas.height;
+  paintFoil();
+  foilTex = new THREE.CanvasTexture(foilCanvas);
+  foilTex.anisotropy = 4;
+}
+
+function paintFoil(){
+  const c = foilCtx, W = foilCanvas.width, H = foilCanvas.height;
+  c.globalCompositeOperation = 'source-over';
+  c.clearRect(0,0,W,H);
+
+  // base metallic gradient driven by persona color
+  const col = activePersona.foil;
+  const c1 = '#' + col[0].toString(16).padStart(6,'0');
+  const c2 = '#' + col[1].toString(16).padStart(6,'0');
+  const g = c.createLinearGradient(0,0,W,H);
+  g.addColorStop(0, lighten(c1,40));
+  g.addColorStop(.42, c1);
+  g.addColorStop(.62, c2);
+  g.addColorStop(1, lighten(c1,18));
+  c.fillStyle = g;
+  c.fillRect(0,0,W,H);
+
+  // diagonal sheen streaks
+  c.globalCompositeOperation = 'overlay';
+  for(let i=-2;i<10;i++){
+    const x = i*130;
+    const sg = c.createLinearGradient(x,0,x+80,H);
+    sg.addColorStop(0,'rgba(255,255,255,0)');
+    sg.addColorStop(.5,'rgba(255,255,255,.5)');
+    sg.addColorStop(1,'rgba(255,255,255,0)');
+    c.fillStyle = sg;
+    c.save();
+    c.translate(x,0); c.rotate(-0.35);
+    c.fillRect(0,-H,70,H*3);
+    c.restore();
+  }
+  c.globalCompositeOperation = 'source-over';
+
+  // speckle texture
+  for(let i=0;i<420;i++){
+    c.fillStyle = 'rgba(255,255,255,'+(Math.random()*0.16)+')';
+    c.beginPath();
+    c.arc(Math.random()*W, Math.random()*H, Math.random()*2.2, 0, 6.28);
+    c.fill();
+  }
+
+  // border frame
+  c.strokeStyle = 'rgba(255,255,255,.55)';
+  c.lineWidth = 10;
+  c.strokeRect(14,14,W-28,H-28);
+
+  // ===== printed text on the foil =====
+  c.textAlign = 'center';
+  c.fillStyle = 'rgba(255,255,255,.96)';
+  c.font = '900 78px Fraunces, Georgia, serif';
+  c.fillText('SCRATCH', W/2, H/2 - 22);
+  c.fillStyle = 'rgba(14,26,20,.85)';
+  c.font = '900 100px Fraunces, Georgia, serif';
+  c.fillText('TO WIN', W/2, H/2 + 78);
+
+  c.fillStyle = 'rgba(255,255,255,.78)';
+  c.font = '600 26px Spline Sans, sans-serif';
+  c.fillText('· EMPLOYEE RECOGNITION CARD ·', W/2, 78);
+
+  c.font = '600 22px Spline Sans, sans-serif';
+  c.fillStyle = 'rgba(14,26,20,.6)';
+  c.fillText('justScratch it!', W/2, H-52);
+
+  // corner coins motif
+  drawCoin(c, 70, 70, 26);
+  drawCoin(c, W-70, 70, 26);
+  drawCoin(c, 70, H-70, 26);
+  drawCoin(c, W-70, H-70, 26);
+}
+
+function drawCoin(c,x,y,r){
+  const g = c.createRadialGradient(x-r*0.3,y-r*0.3,2,x,y,r);
+  g.addColorStop(0,'#fff4cf'); g.addColorStop(.6,'#e8b23a'); g.addColorStop(1,'#9a6f18');
+  c.fillStyle = g;
+  c.beginPath(); c.arc(x,y,r,0,6.28); c.fill();
+  c.strokeStyle='rgba(255,255,255,.6)'; c.lineWidth=2; c.stroke();
+  c.fillStyle='#7a5410'; c.font='900 24px Fraunces, serif'; c.textAlign='center';
+  c.fillText('$',x,y+8);
+}
+
+function lighten(hex,amt){
+  const n = parseInt(hex.slice(1),16);
+  let r=(n>>16)+amt, g=((n>>8)&255)+amt, b=(n&255)+amt;
+  r=Math.min(255,r);g=Math.min(255,g);b=Math.min(255,b);
+  return '#'+((r<<16)|(g<<8)|b).toString(16).padStart(6,'0');
+}
+
+/* ---------- scratch erasing ---------- */
+function scratchAt(clientX, clientY){
+  if(revealed) return;
+  const rect = host.getBoundingClientRect();
+  // normalized device coords for raycasting onto the plane
+  const nx = ((clientX-rect.left)/rect.width)*2 - 1;
+  const ny = -((clientY-rect.top)/rect.height)*2 + 1;
+  // map directly to texture space (plane fills view closely)
+  const tx = ((clientX-rect.left)/rect.width)*foilCanvas.width;
+  const ty = ((clientY-rect.top)/rect.height)*foilCanvas.height;
+
+  foilCtx.globalCompositeOperation = 'destination-out';
+  const radius = 30;
+  if(lastX!==null){
+    // interpolate for smooth continuous strokes
+    const dist = Math.hypot(tx-lastX, ty-lastY);
+    const steps = Math.max(1, Math.floor(dist/5));
+    for(let i=0;i<=steps;i++){
+      const ix = lastX + (tx-lastX)*(i/steps);
+      const iy = lastY + (ty-lastY)*(i/steps);
+      foilCtx.beginPath();
+      foilCtx.arc(ix,iy,radius,0,6.28);
+      foilCtx.fill();
+    }
+  } else {
+    foilCtx.beginPath();
+    foilCtx.arc(tx,ty,radius,0,6.28);
+    foilCtx.fill();
+  }
+  lastX = tx; lastY = ty;
+  foilCtx.globalCompositeOperation = 'source-over';
+  foilTex.needsUpdate = true;
+  updateProgress();
+}
+
+let progSample = 0;
+function updateProgress(){
+  // sample the canvas for transparency every few moves (cheap)
+  progSample++;
+  if(progSample % 4 !== 0) return;
+  const data = foilCtx.getImageData(0,0,foilCanvas.width,foilCanvas.height).data;
+  let clear = 0, total = 0;
+  // step through every 16th pixel's alpha channel
+  for(let i=3;i<data.length;i+=64){
+    total++;
+    if(data[i]<20) clear++;
+  }
+  const pct = Math.min(100, Math.round((clear/total)*100));
+  scratched = pct;
+  document.getElementById('progFill').style.width = pct+'%';
+  document.getElementById('progPct').textContent = pct+'%';
+  // only call it "revealed" once most of the card is genuinely gone
+  if(pct>=85 && !revealed){ markRevealed(); }
+}
+
+function markRevealed(){
+  // the foil is essentially scratched away by the user — no auto-fade.
+  // just acknowledge completion. remaining flecks stay until they finish.
+  revealed = true;
+  document.getElementById('progLabel').textContent = 'Revealed!';
+}
+
+function resetCard(){
+  revealed = false;
+  scratched = 0;
+  lastX = lastY = null;
+  cardMesh.visible = true;
+  cardMesh.material.opacity = 1;
+  paintFoil();
+  foilTex.needsUpdate = true;
+  document.getElementById('progFill').style.width = '0%';
+  document.getElementById('progPct').textContent = '0%';
+  document.getElementById('progLabel').textContent = 'Scratched';
+  hint.style.opacity = '1';
+}
+
+/* ---------- pointer handlers ---------- */
+function pointerDown(e){
+  isDown = true;
+  hint.style.opacity = '0';
+  lastX = lastY = null;
+  const p = e.touches ? e.touches[0] : e;
+  scratchAt(p.clientX, p.clientY);
+}
+function pointerMove(e){
+  const p = e.touches ? e.touches[0] : e;
+  // 3D tilt follows pointer always
+  const rect = host.getBoundingClientRect();
+  targetRotY = (((p.clientX-rect.left)/rect.width)-.5) * 0.5;
+  targetRotX = (((p.clientY-rect.top)/rect.height)-.5) * -0.4;
+  if(isDown){
+    e.preventDefault();
+    scratchAt(p.clientX, p.clientY);
+  }
+}
+function pointerUp(){ isDown=false; lastX=lastY=null; }
+
+host.addEventListener('mousedown', pointerDown);
+window.addEventListener('mousemove', pointerMove);
+window.addEventListener('mouseup', pointerUp);
+host.addEventListener('touchstart', pointerDown, {passive:false});
+host.addEventListener('touchmove', pointerMove, {passive:false});
+window.addEventListener('touchend', pointerUp);
+document.getElementById('resetBtn').addEventListener('click', resetCard);
+
+function animate(){
+  requestAnimationFrame(animate);
+  curRotX += (targetRotX-curRotX)*0.08;
+  curRotY += (targetRotY-curRotY)*0.08;
+  if(cardMesh){
+    cardMesh.rotation.x = curRotX;
+    cardMesh.rotation.y = curRotY;
+  }
+  renderer.render(scene,camera);
+}
+
+window.addEventListener('resize', ()=>{
+  if(!renderer) return;
+  const w = host.clientWidth, h = host.clientHeight;
+  camera.aspect = w/h; camera.updateProjectionMatrix();
+  renderer.setSize(w,h);
+});
+
+/* ========================================================
+   PERSONA SWITCHER
+   ======================================================== */
+const personaRow = document.getElementById('personaRow');
+PERSONAS.forEach((p,i)=>{
+  const chip = document.createElement('button');
+  chip.className = 'persona-chip' + (i===0?' active':'');
+  chip.innerHTML = `<span class="dot"></span>${p.label}`;
+  chip.onclick = ()=>{
+    document.querySelectorAll('.persona-chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    activePersona = p;
+    applyPersona(p);
+  };
+  personaRow.appendChild(chip);
+});
+
+function applyPersona(p){
+  document.getElementById('rIcon').textContent = p.icon;
+  document.getElementById('rKicker').textContent = p.kicker;
+  document.getElementById('rHeadline').innerHTML = p.headline;
+  document.getElementById('rSub').textContent = p.sub;
+  resetCard();
+}
+
+/* ========================================================
+   TRIGGER DIAGNOSTIC
+   ======================================================== */
+const SIGNALS = [
+  { id:'layoff', t:'Recent layoffs or restructuring', d:'Survivors need a trust signal' },
+  { id:'glassdoor', t:'Slipping Glassdoor / review trend', d:'Culture perception is public' },
+  { id:'turnover', t:'High turnover on frontline roles', d:'Recognition rarely reaches them' },
+  { id:'newsite', t:'New site or location opening', d:'Set the culture from day one' },
+  { id:'frontline', t:'Mostly deskless / no-email staff', d:'Digital recognition misses them' },
+  { id:'safety', t:'Safety-sensitive workforce', d:'Reward streaks tangibly' },
+  { id:'seasonal', t:'Seasonal or peak-season hiring', d:'Morale must scale fast' },
+  { id:'generic', t:'Current rewards feel generic', d:'Gift cards get forgotten' },
+];
+const selected = new Set();
+const signalList = document.getElementById('signalList');
+SIGNALS.forEach(s=>{
+  const el = document.createElement('div');
+  el.className = 'signal';
+  el.innerHTML = `<div class="sig-check">✓</div><div class="sig-text"><b>${s.t}</b><span>${s.d}</span></div>`;
+  el.onclick = ()=>{
+    if(selected.has(s.id)){ selected.delete(s.id); el.classList.remove('on'); }
+    else{ selected.add(s.id); el.classList.add('on'); }
+    updateDiagnostic();
+  };
+  signalList.appendChild(el);
+});
+
+function updateDiagnostic(){
+  const n = selected.size;
+  document.getElementById('resScore').textContent = n;
+  document.getElementById('resMeter').style.width = Math.max(8,(n/8)*100)+'%';
+  const title = document.getElementById('resTitle');
+  const desc = document.getElementById('resDesc');
+  const play = document.getElementById('resPlay');
+
+  if(n===0){
+    title.textContent = 'Select your signals to begin';
+    desc.textContent = 'Most teams we work with check 3 or more. Each signal you tick sharpens the recommendation below.';
+    play.textContent = 'Start with a single milestone card pilot — low cost, fast read on engagement.';
+    return;
+  }
+  // tailored plays based on highest-priority signal present
+  if(selected.has('layoff')){
+    title.textContent = 'Rebuild-trust priority';
+    desc.textContent = 'Post-layoff is the highest-stakes window. The people who stayed are watching for a real signal — not a memo.';
+    play.textContent = 'Run a "you matter here" milestone card to every remaining employee within 30 days.';
+  } else if(selected.has('glassdoor')){
+    title.textContent = 'Culture-perception priority';
+    desc.textContent = 'A slipping review trend compounds quietly. Visible, frequent recognition is the fastest organic counter-signal.';
+    play.textContent = 'Weekly small-win scratch cards on the floor — recognition that staff naturally talk about.';
+  } else if(selected.has('safety')){
+    title.textContent = 'Safety-streak priority';
+    desc.textContent = 'Tangible reward reinforces safe behavior far better than a points dashboard nobody opens.';
+    play.textContent = 'Tiered safety-streak cards handed out on-site at shift change.';
+  } else if(selected.has('frontline') || selected.has('turnover')){
+    title.textContent = 'Frontline-reach priority';
+    desc.textContent = 'Deskless, high-turnover teams are exactly who digital recognition misses. A physical card reaches everyone.';
+    play.textContent = 'No-app milestone cards distributed by shift leads — zero login, zero exclusion.';
+  } else {
+    title.textContent = 'Recognition-habit priority';
+    desc.textContent = 'You have a clear opening. A consistent scratch-card ritual turns one-off thanks into a culture.';
+    play.textContent = 'Launch a monthly recognition card with rotating prize tiers across teams.';
+  }
+  if(n>=4){
+    desc.textContent += ' With ' + n + ' signals active, we\'d recommend talking to a strategist alongside your sample pack.';
+  }
+}
+
+/* ========================================================
+   COUNT-UP STATS
+   ======================================================== */
+function runCounters(el){
+  el.querySelectorAll('[data-count]').forEach(c=>{
+    const target = parseFloat(c.dataset.count);
+    const suffix = c.dataset.suffix || '';
+    const dec = target % 1 !== 0;
+    let cur = 0;
+    const step = target/55;
+    const tick = ()=>{
+      cur += step;
+      if(cur>=target){ c.textContent = (dec?target.toFixed(1):target)+suffix; return; }
+      c.textContent = (dec?cur.toFixed(1):Math.floor(cur))+suffix;
+      requestAnimationFrame(tick);
+    };
+    tick();
+  });
+}
+
+/* ========================================================
+   SCROLL REVEAL
+   ======================================================== */
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('in');
+      if(e.target.classList.contains('band-stat')) runCounters(e.target);
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:.18});
+document.querySelectorAll('.ro').forEach(el=>io.observe(el));
+// stagger steps + icp
+document.querySelectorAll('.steps .step, .icp-grid .icp').forEach((el,i)=>{
+  el.style.transitionDelay = (i*0.07)+'s';
+});
+
+/* ========================================================
+   SAMPLE FORM + HELPERS
+   ======================================================== */
+function scrollToSamples(){
+  document.getElementById('samples').scrollIntoView({behavior:'smooth'});
+}
+function submitSamples(){
+  const email = document.getElementById('fEmail').value.trim();
+  if(!email || !email.includes('@')){
+    document.getElementById('fEmail').style.borderColor = 'var(--coral)';
+    document.getElementById('fEmail').focus();
+    return;
+  }
+  document.getElementById('sampleForm').style.display = 'none';
+  document.getElementById('sampleSuccess').classList.add('show');
+}
+
+/* boot */
+window.addEventListener('load', ()=>{
+  initThree();
+  applyPersona(activePersona);
+});
+</script>
+</body>
+</html>
